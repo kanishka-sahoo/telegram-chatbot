@@ -1,2 +1,2 @@
 # telegram-chatbot
-Telegram-chatbot uses the ChatGPT and Telegram APIs
+Create a bot using OpenAI API and Telegram API
