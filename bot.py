@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 import telebot
 import os
 from dotenv import load_dotenv
