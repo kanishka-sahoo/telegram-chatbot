@@ -1,0 +1,2 @@
+2023-03-21 09:32:24,812 (__init__.py:966 MainThread) ERROR - TeleBot: "Infinity polling: polling exited"
+2023-03-21 09:32:24,812 (__init__.py:968 MainThread) ERROR - TeleBot: "Break infinity polling"
