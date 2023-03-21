@@ -29,25 +29,28 @@ logging.basicConfig(filename="messages.log",
                     filemode='w')
 
 logger = logging.getLogger()
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 
 
 # Test bot online status
 @bot.message_handler(commands=['ping'])
 def net_check(message):
     bot.reply_to(message, "Pong!")
+    logger.info(f'''<{message.from_user.username}>: {message.text}''')
 
 
 # Get weather of given region
 @bot.message_handler(commands=['weather'])
 def getweatherinfo(message):
     bot.reply_to(message, "Coming Soon!")
+    logger.info(f'''<{message.from_user.username}>: {message.text}''')
 
 
 @bot.message_handler(commands=['clearchat'])
 def clearchat(message):
     oif.messages = []
     bot.reply_to(message, 'Cleared Chat')
+    logger.info(f'''<{message.from_user.username}>: {message.text}''')
 
 
 # Use ChatGPT for responses
