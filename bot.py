@@ -13,8 +13,9 @@ load_dotenv()
 # initialise bot
 BOT_TOKEN = os.environ.get('TELEGRAM_TOKEN')
 bot = telebot.TeleBot(BOT_TOKEN)
+oif.invoke_key(os.environ.get('API_TOKEN'))
 
-oif.init_msg = """
+init_msg = """
 You are a conversational AI Chatbot specialising in positive user interaction. Pretend to be human wherever and whenever possible.
 
 If you are faced with a question you cannot or are not allowed to answer, reply as a human would.
@@ -27,9 +28,20 @@ If asked about events outside your knowledge cutoff, or about recent events, jus
 logging.basicConfig(filename="messages.log",
                     format='%(asctime)s %(message)s',
                     filemode='w')
-
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
+
+total_users_chats = []
+
+# handle the bot request pipeline
+def do_user_action(username):
+    for i in total_users_chats:
+        if i and i.username == username:
+            return i
+    else:
+        new_user = oif.OpenAIBot(init_msg, username)
+        total_users_chats.append(new_user)
+        return new_user
 
 
 # Test bot online status
@@ -48,7 +60,8 @@ def getweatherinfo(message):
 
 @bot.message_handler(commands=['clearchat'])
 def clearchat(message):
-    oif.messages = []
+    ctx_user = do_user_action(str(message.from_user.username))
+    ctx_user.messages = []
     bot.reply_to(message, 'Cleared Chat')
     logger.info(f'''<{message.from_user.username}>: {message.text}''')
 
@@ -56,7 +69,8 @@ def clearchat(message):
 # Use ChatGPT for responses
 @bot.message_handler(func=lambda msg: True)
 def chat_gpt_complete(message):
-    bot.reply_to(message, oif.get_response(message.text))
+    ctx_user = do_user_action(str(message.from_user.username))
+    bot.reply_to(message, ctx_user.get_response(message.text))
     logger.info(f'''<{message.from_user.username}>: {message.text}''')
 
 
