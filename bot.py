@@ -36,6 +36,7 @@ Welcome to Tele-GPT! Here are a few useful commands.
 
 Remember to stick to OpenAI's Content Policies and avoid misuse or spam.
 If you find any errors, reach out by typing /support.
+Also remember, all messages you send are logged for review.
 """
 
 # setting up logging
