@@ -27,7 +27,16 @@ You are a conversational AI Chatbot specialising in positive user interaction. P
     user asks for the weather in given city -> the weather in given city is ${weather[city]}
     user asks for other current info -> I don't have the current info.
 """
+user_init_text = """
+Welcome to Tele-GPT! Here are a few useful commands.
+/start : Brings up this message.
+/clearchat : clears the chat history, on OpenAI's servers
+/ping : Tests the server connection, replies with Pong!
+/support : Log complaints directly to the server logs
 
+Remember to stick to OpenAI's Content Policies and avoid misuse or spam.
+If you find any errors, reach out by typing /support.
+"""
 
 # setting up logging
 logging.basicConfig(filename="messages.log",
@@ -73,6 +82,26 @@ def clearchat(message):
     else:
         ctx_user.messages = []
         bot.reply_to(message, 'Cleared Chat')
+        logger.info(f'''<{message.from_user.username}>: {message.text}''')
+
+# When user first starts a chat
+@bot.message_handler(commands=['start'])
+def initiate(message):
+    ctx_user = do_user_action(str(message.from_user.username))
+    if ctx_user == 0xDEADBEEF:
+        bot.reply_to(message, 'Please add a username to your account for chat security.')
+    else:
+        bot.reply_to(message, user_init_text)
+        logger.info(f'''<{message.from_user.username}>: {message.text}''')
+
+
+@bot.message_handler(commands=['support'])
+def support(message):
+    ctx_user = do_user_action(str(message.from_user.username))
+    if ctx_user == 0xDEADBEEF:
+        bot.reply_to(message, 'Please add a username to your account for chat security.')
+    else:
+        bot.reply_to(message, 'Your message has been logged')
         logger.info(f'''<{message.from_user.username}>: {message.text}''')
 
 
