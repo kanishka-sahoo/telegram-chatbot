@@ -40,7 +40,7 @@ total_users_chats = []
 
 # handle the bot request pipeline
 def do_user_action(username):
-    if username == "none":
+    if username == "None" or username == None:
         return 0xDEADBEEF
     for i in total_users_chats:
         if i and i.username == username:
