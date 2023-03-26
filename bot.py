@@ -7,7 +7,7 @@ import requests
 import json
 from telegram.ext import *
 import logging
-
+import openai
 load_dotenv()
 
 # initialise bot
@@ -107,8 +107,11 @@ def chat_gpt_complete(message):
     if ctx_user == 0xDEADBEEF:
         bot.reply_to(messsage, 'Please add a username to your account for chat security.')
     else:
-        bot.reply_to(message, ctx_user.get_response(message.text))
-        logger.info(f'''<{message.from_user.username}>: {message.text}''')
+        try:
+            bot.reply_to(message, ctx_user.get_response(message.text))
+            logger.info(f'''<{message.from_user.username}>: {message.text}''')
+        except openai.error.InvalidRequestError:
+            bot.reply_to(message, "You have run out of OpenAI messages, please run /clearchat to continue")
 
 
 bot.infinity_polling()
