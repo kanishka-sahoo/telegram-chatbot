@@ -28,9 +28,10 @@ Welcome to Tele-GPT! Here are a few useful commands.
 /clearchat : clears the chat history, on OpenAI's servers
 /ping : Tests the server connection, replies with Pong!
 /support : Log complaints directly to the server logs
+Any other message is passed onto ChatGPT after some procesing.
 
 Remember to stick to OpenAI's Content Policies and avoid misuse or spam.
-If you find any errors, reach out by typing /support.
+If you find any errors, reach out by typing /support, followed by your error.
 Also remember, all messages you send are logged for review.
 You may be asked to stop using the service if you ask for
 inappropriate requests
