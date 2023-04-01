@@ -16,7 +16,8 @@ bot = telebot.TeleBot(BOT_TOKEN)
 oif.invoke_key(os.environ.get('API_TOKEN'))
 
 init_msg = """
-You are a conversational AI Chatbot specialising in positive user interaction. Pretend to be human wherever and whenever possible.
+You are a conversational AI Chatbot specialising in positive user interaction.
+Pretend to be human wherever and whenever possible.
 
 Respond to technical, complex questions to the best of your abilities
 Refrain from calling a question complex, and try to solve it instead.
@@ -31,6 +32,8 @@ Welcome to Tele-GPT! Here are a few useful commands.
 Remember to stick to OpenAI's Content Policies and avoid misuse or spam.
 If you find any errors, reach out by typing /support.
 Also remember, all messages you send are logged for review.
+You may be asked to stop using the service if you ask for
+inappropriate requests
 """
 
 # setting up logging
@@ -43,6 +46,8 @@ logger.setLevel(logging.INFO)
 total_users_chats = []
 
 # handle the bot request pipeline
+
+
 def do_user_action(username):
     if username == "None" or username == None or username == "none":
         return 0xDEADBEEF
@@ -73,18 +78,22 @@ def getweatherinfo(message):
 def clearchat(message):
     ctx_user = do_user_action(str(message.from_user.username))
     if ctx_user == 0xDEADBEEF:
-        bot.reply_to(message, 'Please add a username to your account for chat security.')
+        bot.reply_to(
+            message, 'Please add a username to your account for chat security.')
     else:
         ctx_user.messages = []
         bot.reply_to(message, 'Cleared Chat')
         logger.info(f'''<{message.from_user.username}>: {message.text}''')
 
 # When user first starts a chat
+
+
 @bot.message_handler(commands=['start'])
 def initiate(message):
     ctx_user = do_user_action(str(message.from_user.username))
     if ctx_user == 0xDEADBEEF:
-        bot.reply_to(message, 'Please add a username to your account for chat security.')
+        bot.reply_to(
+            message, 'Please add a username to your account for chat security.')
     else:
         bot.reply_to(message, user_init_text)
         logger.info(f'''<{message.from_user.username}>: {message.text}''')
@@ -94,7 +103,8 @@ def initiate(message):
 def support(message):
     ctx_user = do_user_action(str(message.from_user.username))
     if ctx_user == 0xDEADBEEF:
-        bot.reply_to(message, 'Please add a username to your account for chat security.')
+        bot.reply_to(
+            message, 'Please add a username to your account for chat security.')
     else:
         bot.reply_to(message, 'Your message has been logged')
         logger.info(f'''<{message.from_user.username}>: {message.text}''')
@@ -105,13 +115,15 @@ def support(message):
 def chat_gpt_complete(message):
     ctx_user = do_user_action(str(message.from_user.username))
     if ctx_user == 0xDEADBEEF:
-        bot.reply_to(messsage, 'Please add a username to your account for chat security.')
+        bot.reply_to(
+            messsage, 'Please add a username to your account for chat security.')
     else:
         try:
             bot.reply_to(message, ctx_user.get_response(message.text))
             logger.info(f'''<{message.from_user.username}>: {message.text}''')
         except openai.error.InvalidRequestError:
-            bot.reply_to(message, "You have run out of OpenAI messages, please run /clearchat to continue")
+            bot.reply_to(
+                message, "You have run out of OpenAI messages, please run /clearchat to continue")
 
 
 bot.infinity_polling()
