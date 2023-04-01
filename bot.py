@@ -38,7 +38,7 @@ inappropriate requests
 # setting up logging
 logging.basicConfig(filename="messages.log",
                     format='%(asctime)s %(message)s',
-                    filemode='w')
+                    filemode='a')
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
