@@ -30,7 +30,7 @@ Any other message is passed onto ChatGPT after some procesing.
 
 Remember to stick to OpenAI's Content Policies and avoid misuse or spam.
 If you find any errors, reach out by typing /support, followed by your error.
-Also remember, all messages you send are logged for review.
+And remember, all messages you send are logged for review.
 You may be asked to stop using the service if you ask for
 inappropriate requests
 """
