@@ -46,9 +46,14 @@ logger.setLevel(logging.INFO)
 
 total_users_chats = []
 
+
+# Handle the case where username is not defined
+def no_username(bot, message):
+    bot.reply_to(
+        message, 'Please add a username to your account via the Telegram settings for chat privacy and security.')
+
+
 # handle the bot request pipeline
-
-
 def do_user_action(username):
     if username == "None" or username == None or username == "none":
         return 0xDEADBEEF
@@ -79,8 +84,7 @@ def getweatherinfo(message):
 def clearchat(message):
     ctx_user = do_user_action(str(message.from_user.username))
     if ctx_user == 0xDEADBEEF:
-        bot.reply_to(
-            message, 'Please add a username to your account for chat security.')
+        no_username(bot, message)
     else:
         ctx_user.messages = []
         bot.reply_to(message, 'Cleared Chat')
@@ -93,8 +97,7 @@ def clearchat(message):
 def initiate(message):
     ctx_user = do_user_action(str(message.from_user.username))
     if ctx_user == 0xDEADBEEF:
-        bot.reply_to(
-            message, 'Please add a username to your account for chat security.')
+        no_username(bot, message)
     else:
         bot.reply_to(message, user_init_text)
         logger.info(f'''<{message.from_user.username}>: {message.text}''')
@@ -104,8 +107,7 @@ def initiate(message):
 def support(message):
     ctx_user = do_user_action(str(message.from_user.username))
     if ctx_user == 0xDEADBEEF:
-        bot.reply_to(
-            message, 'Please add a username to your account for chat security.')
+        no_username(bot, message)
     else:
         bot.reply_to(message, 'Your message has been logged')
         logger.info(f'''<{message.from_user.username}>: {message.text}''')
@@ -116,8 +118,7 @@ def support(message):
 def chat_gpt_complete(message):
     ctx_user = do_user_action(str(message.from_user.username))
     if ctx_user == 0xDEADBEEF:
-        bot.reply_to(
-            messsage, 'Please add a username to your account for chat security.')
+        no_username(bot, message)
     else:
         try:
             bot.reply_to(message, ctx_user.get_response(message.text))
