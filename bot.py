@@ -12,6 +12,13 @@ BOT_TOKEN = os.environ.get('TELEGRAM_TOKEN')
 bot = telebot.TeleBot(BOT_TOKEN)
 oif.invoke_key(os.environ.get('API_TOKEN'))
 
+# Get user allowlist
+allowlist = []
+with open('.allowlist', 'r') as f:
+    for line in f:
+        for user in line.split():
+            allowlist.append()
+
 INIT_MSG = """
 You are a conversational AI Chatbot called Assistant,
 specialising in positive user interaction.
@@ -25,7 +32,8 @@ Welcome to Tele-GPT! Here are a few useful commands.
 /start : Brings up this message.
 /clearchat : clears the chat history, on OpenAI's servers
 /ping : Tests the server connection, replies with Pong!
-/support : Log complaints directly to the server logs
+/support : Log complaints directly to the server logs.
+/apply : Apply to be a part of the allowlist to use the ChatGPT functionality.
 Any other message is passed onto ChatGPT after some procesing.
 
 Remember to stick to OpenAI's Content Policies and avoid misuse or spam.
@@ -52,10 +60,18 @@ def no_username(bot, message):
         for chat privacy and security.')
 
 
+# Handle the non-allowlisted user
+def not_allowed(bot, message):
+    bot.reply_to(message, "You are not allowed to use this functionality.\
+            Please apply by typing /apply.")
+
+
 # handle the bot request pipeline
 def do_user_action(username):
     if username == "None" or username is None or username == "none":
         return 0xDEADBEEF
+    if username not in allowlist:
+        return 0xDEADFEED
     for i in total_users_chats:
         if i and i.username == username:
             return i
@@ -85,6 +101,8 @@ def clearchat(message):
     ctx_user = do_user_action(str(message.from_user.username))
     if ctx_user == 0xDEADBEEF:
         no_username(bot, message)
+    elif ctx_user == 0xDEADFEED:
+        not_allowed(bot, message)
     else:
         ctx_user.messages = []
         bot.reply_to(message, 'Cleared Chat')
@@ -102,6 +120,7 @@ def initiate(message):
         logger.info(f'''<{message.from_user.username}>: {message.text}''')
 
 
+# Log support tickets
 @bot.message_handler(commands=['support'])
 def support(message):
     ctx_user = do_user_action(str(message.from_user.username))
@@ -112,12 +131,25 @@ def support(message):
         logger.info(f'''<{message.from_user.username}>: {message.text}''')
 
 
+# Apply to be a part of whitelist
+@bot.message_handler(commands=['apply'])
+def apply(message):
+    ctx_user = do_user_action(str(message.from_user.username))
+    if ctx_user == 0xDEADBEEF:
+        no_username(bot, message)
+    else:
+        bot.reply_to(message, 'Your application has been submitted.')
+        logger.info(f'''<{message.from_user.username}>: {message.text}''')
+
+
 # Use ChatGPT for responses
 @bot.message_handler(func=lambda msg: True)
 def chat_gpt_complete(message):
     ctx_user = do_user_action(str(message.from_user.username))
     if ctx_user == 0xDEADBEEF:
         no_username(bot, message)
+    elif ctx_user == 0xDEADFEED:
+        not_allowed(bot, message)
     else:
         try:
             bot.reply_to(message, ctx_user.get_response(message.text))

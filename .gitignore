@@ -129,4 +129,4 @@ dmypy.json
 .pyre/
 *.out
 *.log
-.whitelist
+.allowlist
