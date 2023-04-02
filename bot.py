@@ -17,7 +17,7 @@ allowlist = []
 with open('.allowlist', 'r') as f:
     for line in f:
         for user in line.split():
-            allowlist.append()
+            allowlist.append(user)
 
 INIT_MSG = """
 You are a conversational AI Chatbot called Assistant,
